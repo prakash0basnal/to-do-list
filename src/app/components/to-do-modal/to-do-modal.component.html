@@ -1,0 +1,76 @@
+ <ion-header>
+  <ion-toolbar>
+    <ion-title>Add Todo</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <form class="example-form" [formGroup]="todoListForm" (ngSubmit)="confirm()" >
+    <ion-item-group  >
+
+    <ion-item>
+      <ion-input label="Title" label-placement="floating"  placeholder="Enter Title " formControlName="title"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-textarea label="Details" label-placement="floating"  placeholder="Type details..." formControlName="detail" [counter]="true" maxlength="100" ></ion-textarea>
+    </ion-item>
+    
+    <ion-item>
+      <ion-input
+        [value]="todoListForm.controls['date'].value| date: 'dd.MM.yyyy' "
+        placeholder="Select Date"
+        id="date"
+      ></ion-input>
+
+      <ion-label for="date">
+        <ion-icon name="calendar-outline"></ion-icon>
+      </ion-label>
+
+      <ion-popover trigger="date" >
+        <ng-template>
+          <ion-datetime
+            [isDateEnabled]="isWeekday"
+            presentation="date"
+            formControlName="date"
+          ></ion-datetime>
+        </ng-template>
+      </ion-popover>
+    </ion-item>
+
+    <ion-item>
+      <ion-checkbox labelPlacement="end" formControlName="specialData" >Add Time for reminder</ion-checkbox>
+    </ion-item>
+  @if(todoListForm.controls['specialData'].value){
+    
+    <ion-item>
+      <ion-input
+        [value]="todoListForm.controls['time'].value| date: 'shortTime' "
+        placeholder="Select Time"
+        id="time"
+      ></ion-input>
+
+      <ion-label for="time">
+        <ion-icon name="alarm-outline"></ion-icon>
+      </ion-label>
+
+      <ion-popover trigger="time" >
+        <ng-template>
+          <ion-datetime
+            presentation="time"
+            formControlName="time"
+            hourCycle="h12"
+          ></ion-datetime>
+        </ng-template>
+      </ion-popover>
+    </ion-item>
+  }
+    
+</ion-item-group>
+
+  </form>
+</ion-content>
+
+
