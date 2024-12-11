@@ -4,6 +4,9 @@ import { MaterialModule } from '../../shared/material.module';
 import { ToDoModalComponent } from '../to-do-modal/to-do-modal.component';
 import { ModalController } from '@ionic/angular';
 
+import { addIcons } from 'ionicons';
+import { library, playCircle, radio, search ,create,trash} from 'ionicons/icons';
+
 @Component({
   selector: 'app-to-do-list',
   imports: [CommonModule,MaterialModule],
@@ -12,7 +15,9 @@ import { ModalController } from '@ionic/angular';
 })
 export class ToDoListComponent implements OnInit,OnDestroy {
 
-  constructor(){}
+  constructor(){
+    addIcons({ library, playCircle, radio, search,create,trash });
+  }
   readonly modalCtrl=inject (ModalController);
   ngOnInit(): void {
     

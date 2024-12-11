@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -15,57 +15,54 @@ import { alarmOutline } from 'ionicons/icons';
   styleUrl: './to-do-modal.component.css',
 })
 export class ToDoModalComponent implements OnInit,OnDestroy {
+
   
   constructor(private formbuilder:FormBuilder){
     addIcons({calendarOutline,alarmOutline});
   }
+  today: string='';
+  maxDate:string='';
+  currentTime = new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString();
+  minTime:any;
+
   todoListForm!: FormGroup; 
   readonly modalCtrl=inject (ModalController);
   date_event:any;
+  isModalOpen = false;  
+  selectedDate: string | undefined;
+  canDismiss=false
   
   isWeekday = (dateString: string) => {
     const date = new Date(dateString);
     const utcDay = date.getUTCDay();
-
-    /**
-     * Date will be enabled if it is not
-     * Sunday or Saturday
-     */
     return utcDay !== 0 && utcDay !== 6;
   };
-
-  isModalOpen = false;  
-  selectedDate: string | undefined;
-
-
-
-  onDateChange(event: any) {
-    this.selectedDate = event.detail.value; // Get the selected date
-    this.todoListForm.controls['date'].setValue(this.selectedDate); // Update the form control
-    this.isModalOpen = false;
-
-  }
-  canDismiss=false
-
 
   datePick(){
     this.date_event = this.date_event.substring(0, 10);
   }
   
   ngOnInit(): void {
+
+      const currentDate = new Date();
+      this.today = currentDate.toISOString().split('T')[0] + 'T00:00:00';
+      currentDate.setMonth(currentDate.getMonth() + 3); 
+      this.maxDate = currentDate.toISOString().split('T')[0] + 'T23:59:59';
+
     this.todoListForm=this.formbuilder.group({
       title: ['', [Validators.required]], 
       detail: [''],
       specialData:[false],
-      date: ['', []],
+      date: ['', [Validators.required]],
       time: ['', []]
     }) 
+
+    this.todoListForm.controls['specialData'].valueChanges.subscribe(value => {
+      if(value) this.minTime=this.currentTime
+    });
+
   }
 
-
-  cancel() {
-    return this.modalCtrl.dismiss(null, 'cancel');
-  }
 
   confirm() {
     console.log(this.todoListForm.value)
@@ -74,7 +71,29 @@ export class ToDoModalComponent implements OnInit,OnDestroy {
   }
 
 
- 
+
+  onDateChange(event:any){
+    const selectedDate = new Date(event.target.value).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day:'2-digit'
+    });
+
+    let currentDate = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day:'2-digit'
+    });
+    if (selectedDate === currentDate) {
+      this.minTime=this.currentTime
+    } else {
+      this.minTime = null;
+
+    }
+
+  }
+
+
   ngOnDestroy(): void {
     
   }

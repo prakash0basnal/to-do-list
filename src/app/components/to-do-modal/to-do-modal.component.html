@@ -15,7 +15,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-textarea label="Details" label-placement="floating"  placeholder="Type details..." formControlName="detail" [counter]="true" maxlength="100" ></ion-textarea>
+      <ion-textarea label="Details" label-placement="floating"  placeholder="Type details..." formControlName="detail" [counter]="true" maxlength="250" ></ion-textarea>
     </ion-item>
     
     <ion-item>
@@ -32,7 +32,10 @@
       <ion-popover trigger="date" >
         <ng-template>
           <ion-datetime
+            [min]="today"
+            [max]="maxDate"
             [isDateEnabled]="isWeekday"
+            (ionChange)="onDateChange($event)"
             presentation="date"
             formControlName="date"
           ></ion-datetime>
@@ -59,6 +62,7 @@
       <ion-popover trigger="time" >
         <ng-template>
           <ion-datetime
+            [min]="minTime" 
             presentation="time"
             formControlName="time"
             hourCycle="h12"
